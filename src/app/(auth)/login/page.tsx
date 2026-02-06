@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth, signIn } from "@/auth";
+import { TypshLogo } from "@/components/typsh-logo";
 import { Button } from "@/components/ui/button";
 
 export default async function LoginPage() {
@@ -17,12 +19,12 @@ export default async function LoginPage() {
       <main className="relative z-10 flex w-full max-w-sm flex-col items-center gap-10 px-6">
         {/* Logo & Branding */}
         <div className="flex flex-col items-center gap-4">
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <TypshLogo />
             <h1 className="text-2xl font-semibold tracking-tight text-foreground font-sans">
               Typsh
             </h1>
-          </div>
+          </Link>
           <p className="text-center text-sm leading-relaxed text-muted-foreground">
             {"브라우저에서 Typst 문서를 작성하고"}
             <br />
@@ -83,37 +85,6 @@ export default async function LoginPage() {
         </p>
       </main>
     </div>
-  );
-}
-
-function TypshLogo() {
-  return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 28 28"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <rect
-        width="28"
-        height="28"
-        rx="6"
-        className="fill-foreground"
-      />
-      <text
-        x="14"
-        y="19.5"
-        textAnchor="middle"
-        className="fill-background"
-        fontSize="14"
-        fontWeight="700"
-        fontFamily="var(--font-geist-mono), monospace"
-      >
-        T
-      </text>
-    </svg>
   );
 }
 
