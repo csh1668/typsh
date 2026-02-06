@@ -6,35 +6,34 @@ export function HeroSection() {
   return (
     <section className="relative flex flex-col items-center px-6 pt-28 pb-20 md:pt-40 md:pb-28">
       {/* Badge */}
-      <div className="mb-6 inline-flex items-center rounded-full border border-border bg-card/60 px-3.5 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
-        <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+      <div className="mb-8 inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-1.5 text-xs font-medium text-emerald-400 backdrop-blur-md shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-colors hover:border-emerald-500/30">
+        <span className="mr-2 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
         {"Open Source & Free"}
       </div>
 
       {/* Headline */}
-      <h1 className="max-w-3xl text-center text-4xl font-bold leading-[1.1] tracking-tight text-foreground md:text-6xl text-balance font-sans">
-        {"Typst 문서를"}
-        <br className="hidden md:block" />
-        {"브라우저에서 함께 작성하세요"}
+      <h1 className="max-w-4xl text-center text-3xl font-bold leading-[1.1] tracking-tight text-foreground md:text-5xl lg:text-6xl text-balance font-sans">
+        <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+          {"Typst 문서를 브라우저에서"}
+          <br className="hidden md:block" />
+          {"다같이 작성하세요"}
+        </span>
       </h1>
 
-      {/* Subheadline */}
-      <p className="mt-5 max-w-xl text-center text-base leading-relaxed text-muted-foreground md:text-lg text-pretty">
-        {"실시간 협업 에디터와 브라우저 내 WASM 컴파일로"}
-        <br className="hidden md:block" />
-        {"설치 없이 어디서든 Typst 문서를 작성하고 공유하세요."}
-      </p>
-
       {/* CTA */}
-      <div className="mt-10 flex items-center gap-4">
-        <Button size="lg" asChild className="h-11 px-6 text-sm font-medium">
+      <div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
+        <Button
+          size="lg"
+          asChild
+          className="h-12 px-8 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.15)]"
+        >
           <Link href="/login">{"무료로 시작하기"}</Link>
         </Button>
         <Button
           variant="outline"
           size="lg"
           asChild
-          className="h-11 px-6 text-sm font-medium"
+          className="h-12 px-8 text-base font-medium border-border/50 bg-background/30 backdrop-blur-sm hover:bg-accent transition-all duration-300"
         >
           <a
             href="https://github.com/csh1668/typsh"
@@ -45,17 +44,6 @@ export function HeroSection() {
             {"GitHub"}
           </a>
         </Button>
-      </div>
-
-      {/* Command hint */}
-      <div className="mt-6 flex items-center gap-2 rounded-lg border border-border bg-card/50 px-4 py-2 backdrop-blur-sm">
-        <span className="text-xs text-muted-foreground font-mono">
-          {"Overleaf"}
-        </span>
-        <span className="text-xs text-muted-foreground/50">{"for"}</span>
-        <span className="text-xs text-foreground font-mono font-semibold">
-          {"Typst"}
-        </span>
       </div>
     </section>
   );

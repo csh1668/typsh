@@ -1,44 +1,34 @@
 import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
 import { TypshLogo } from "@/components/typsh-logo";
+import { Button } from "@/components/ui/button";
 
 export function LandingFooter() {
   return (
-    <footer className="border-t border-border px-6 py-16 md:py-20">
+    <footer className="relative border-t border-white/5 px-6 py-24 md:py-32 overflow-hidden">
+      {/* Footer background glow */}
+      <div className="absolute bottom-0 left-1/2 -z-10 h-[300px] w-full max-w-4xl -translate-x-1/2 rounded-full bg-emerald-500/5 blur-[100px]" />
+
       <div className="mx-auto max-w-5xl">
-        {/* CTA block */}
-        <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="mb-4 text-2xl font-bold tracking-tight text-foreground md:text-3xl font-sans text-balance">
-            {"지금 시작하세요"}
-          </h2>
-          <p className="mb-8 max-w-md text-sm leading-relaxed text-muted-foreground">
-            {"계정을 만들고 첫 번째 Typst 문서를 작성해보세요."}
-            <br />
-            {"설치 없이 브라우저에서 바로 사용할 수 있습니다."}
-          </p>
-          <Button size="lg" asChild className="h-11 px-8 text-sm font-medium">
-            <Link href="/login">{"무료로 시작하기"}</Link>
-          </Button>
-        </div>
 
         {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-6 border-t border-white/5 pt-12 md:flex-row">
           <div className="flex items-center gap-2.5">
-            <TypshLogo size={18} />
-            <span className="text-sm font-medium text-foreground">Typsh</span>
+            <TypshLogo size={20} />
+            <span className="text-base font-bold text-foreground">Typsh</span>
           </div>
-          <p className="text-xs text-muted-foreground/60">
-            {"Built with Next.js, Typst WASM, and Liveblocks."}
+          <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground/40">
+            {"© 2026 Built with Next.js, Typst WASM, and Liveblocks."}
           </p>
-          <a
-            href="https://github.com/csh1668/typsh"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
-            {"GitHub"}
-          </a>
+          <div className="flex items-center gap-6">
+            <a
+              href="https://github.com/csh1668/typsh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {"GitHub"}
+            </a>
+          </div>
         </div>
       </div>
     </footer>

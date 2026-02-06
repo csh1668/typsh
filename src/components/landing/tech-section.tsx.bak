@@ -1,0 +1,45 @@
+export function TechSection() {
+  const techItems = [
+    { label: "Framework", value: "Next.js 16" },
+    { label: "Editor", value: "CodeMirror 6" },
+    { label: "Collaboration", value: "Liveblocks + Yjs" },
+    { label: "Compiler", value: "Typst WASM" },
+    { label: "Database", value: "Neon Postgres" },
+    { label: "Storage", value: "Vercel Blob" },
+    { label: "Auth", value: "Auth.js v5" },
+    { label: "Styling", value: "Tailwind + shadcn" },
+  ];
+
+  return (
+    <section id="tech" className="px-6 py-24 md:py-32">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-16 text-center md:mb-20">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-500">
+            {"Tech Stack"}
+          </p>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-5xl text-balance font-sans">
+            <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+              {"모던 웹 기술로 구축"}
+            </span>
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {techItems.map((item) => (
+            <div
+              key={item.label}
+              className="group flex flex-col gap-1 rounded-xl border border-border/50 bg-card/30 p-6 backdrop-blur-md transition-all duration-300 hover:border-foreground/10 hover:bg-card/50"
+            >
+              <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground transition-colors group-hover:text-emerald-500">
+                {item.label}
+              </span>
+              <span className="text-sm font-bold text-foreground font-mono">
+                {item.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

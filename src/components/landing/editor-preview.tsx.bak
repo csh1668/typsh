@@ -1,0 +1,238 @@
+export function EditorPreview() {
+  return (
+    <section id="editor" className="relative px-6 py-24 md:py-32">
+      {/* Background decoration */}
+      <div className="absolute top-1/2 left-1/2 -z-10 h-[500px] w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/10 blur-[120px] opacity-50" />
+
+      <div className="mx-auto max-w-5xl">
+        {/* Editor mockup */}
+        <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0A0A0B] shadow-2xl shadow-black/40 backdrop-blur-xl transition-all duration-500 hover:border-white/20">
+          {/* Glass highlight effect */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.02] to-transparent pointer-events-none" />
+
+          {/* Title bar */}
+          <div className="flex items-center gap-2 border-b border-white/5 px-6 py-4">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-rose-500/50" />
+              <div className="h-3 w-3 rounded-full bg-amber-500/50" />
+              <div className="h-3 w-3 rounded-full bg-emerald-500/50" />
+            </div>
+            <div className="ml-6 flex items-center gap-1">
+              <TabButton active>main.typ</TabButton>
+              <TabButton>refs.bib</TabButton>
+            </div>
+          </div>
+
+          {/* Editor content - 3 pane */}
+          <div className="grid grid-cols-1 md:grid-cols-[220px_1fr_1fr]">
+            {/* File tree */}
+            <div className="hidden border-r border-white/5 p-4 md:block bg-black/20">
+              <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60">
+                {"Explorer"}
+              </p>
+              <div className="flex flex-col gap-1">
+                <FileItem icon="folder" name="figures/" indent={0} />
+                <FileItem icon="image" name="logo.svg" indent={1} />
+                <FileItem icon="file" name="main.typ" indent={0} active />
+                <FileItem icon="file" name="template.typ" indent={0} />
+                <FileItem icon="data" name="refs.bib" indent={0} />
+              </div>
+            </div>
+
+            {/* Code editor */}
+            <div className="border-r border-white/5 p-6 font-mono text-[13px] leading-relaxed bg-black/10">
+              <CodeLine num={1} indent={0}>
+                <Kw>{"#set"}</Kw>
+                {" page(paper: "}
+                <Str>{'"a4"'}</Str>
+                {")"}
+              </CodeLine>
+              <CodeLine num={2} indent={0}>
+                <Kw>{"#set"}</Kw>
+                {" text(font: "}
+                <Str>{'"Pretendard"'}</Str>
+                {", size: 11pt)"}
+              </CodeLine>
+              <CodeLine num={3} indent={0}>
+                {""}
+              </CodeLine>
+              <CodeLine num={4} indent={0}>
+                <Kw>{"= "}</Kw>
+                <span className="text-foreground font-bold">
+                  {"Typsh: Collaborative Editor"}
+                </span>
+              </CodeLine>
+              <CodeLine num={5} indent={0}>
+                {""}
+              </CodeLine>
+              <CodeLine num={6} indent={0}>
+                <Cmt>{"// Real-time collaboration"}</Cmt>
+              </CodeLine>
+              <CodeLine num={7} indent={0}>
+                {"브라우저에서 "}
+                <Kw>{"*Typst*"}</Kw>
+                {" 문서를 작성하고,"}
+              </CodeLine>
+              <CodeLine num={8} indent={0}>
+                {"팀원들과 "}
+                <Kw>{"*실시간*"}</Kw>
+                {"으로 협업하세요."}
+              </CodeLine>
+              <CodeLine num={9} indent={0}>
+                {""}
+              </CodeLine>
+              <CodeLine num={10} indent={0}>
+                <Kw>{"#figure("}</Kw>
+              </CodeLine>
+              <CodeLine num={11} indent={1}>
+                {"image("}
+                <Str>{'"figures/logo.svg"'}</Str>
+                {"),"}
+              </CodeLine>
+              <CodeLine num={12} indent={0}>
+                <Kw>{")"}</Kw>
+              </CodeLine>
+            </div>
+
+            {/* Preview pane */}
+            <div className="flex flex-col bg-white/[0.01] p-8">
+              <div className="flex flex-col gap-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60">
+                    {"Preview"}
+                  </span>
+                  <div className="flex items-center gap-2 rounded-full bg-emerald-500/10 px-2.5 py-0.5">
+                    <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                    <span className="text-[9px] font-bold text-emerald-500 uppercase">
+                      {"Compiled"}
+                    </span>
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-6 shadow-sm">
+                  <h3 className="mb-4 text-base font-bold text-foreground">
+                    {"Typsh: Collaborative Editor"}
+                  </h3>
+                  <p className="text-[13px] leading-relaxed text-muted-foreground/90">
+                    {"브라우저에서 "}
+                    <span className="font-semibold text-foreground/90 underline decoration-emerald-500/30">
+                      Typst
+                    </span>
+                    {" 문서를 작성하고, 팀원들과 "}
+                    <span className="font-semibold text-foreground/90 underline decoration-blue-500/30">
+                      {"실시간"}
+                    </span>
+                    {"으로 협업하세요."}
+                  </p>
+                  <div className="mt-6 flex h-14 items-center justify-center rounded-lg border border-dashed border-white/10 bg-white/[0.01]">
+                    <span className="text-[11px] font-mono text-muted-foreground/50">
+                      {"[figures/logo.svg]"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              {/* Collaboration cursors hint */}
+              <div className="mt-auto flex items-center gap-3 pt-6">
+                <div className="flex -space-x-2">
+                  <div className="h-6 w-6 rounded-full border-2 border-[#0A0A0B] bg-emerald-500" />
+                  <div className="h-6 w-6 rounded-full border-2 border-[#0A0A0B] bg-blue-500" />
+                  <div className="h-6 w-6 rounded-full border-2 border-[#0A0A0B] bg-rose-500" />
+                </div>
+                <span className="text-[11px] font-medium text-muted-foreground">
+                  {"3 editors online"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TabButton({
+  children,
+  active,
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+}) {
+  return (
+    <span
+      className={`rounded px-3 py-1.5 text-[11px] font-bold font-mono transition-colors ${
+        active
+          ? "bg-white/10 text-foreground"
+          : "text-muted-foreground/60 hover:text-muted-foreground"
+      }`}
+    >
+      {children}
+    </span>
+  );
+}
+
+function FileItem({
+  icon,
+  name,
+  indent,
+  active,
+}: {
+  icon: "folder" | "file" | "image" | "data";
+  name: string;
+  indent: number;
+  active?: boolean;
+}) {
+  const icons: Record<string, string> = {
+    folder: "📁",
+    file: "📄",
+    image: "🖼️",
+    data: "📊",
+  };
+  return (
+    <div
+      className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-medium transition-colors ${
+        active
+          ? "bg-white/5 text-foreground shadow-sm"
+          : "text-muted-foreground/60 hover:bg-white/[0.02] hover:text-muted-foreground"
+      }`}
+      style={{ paddingLeft: `${indent * 12 + 12}px` }}
+    >
+      <span className="text-[10px] opacity-70">{icons[icon]}</span>
+      {name}
+    </div>
+  );
+}
+
+function CodeLine({
+  num,
+  indent,
+  children,
+}: {
+  num: number;
+  indent: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex">
+      <span className="inline-block w-7 shrink-0 text-right text-muted-foreground/40 select-none">
+        {num}
+      </span>
+      <span
+        className="ml-4 text-muted-foreground"
+        style={{ paddingLeft: `${indent * 16}px` }}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
+function Kw({ children }: { children: React.ReactNode }) {
+  return <span className="text-foreground/90">{children}</span>;
+}
+
+function Str({ children }: { children: React.ReactNode }) {
+  return <span className="text-emerald-400/80">{children}</span>;
+}
+
+function Cmt({ children }: { children: React.ReactNode }) {
+  return <span className="text-muted-foreground/50 italic">{children}</span>;
+}

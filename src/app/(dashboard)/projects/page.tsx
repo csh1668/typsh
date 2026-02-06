@@ -14,8 +14,7 @@ export default function ProjectsPage() {
           </p>
         </div>
         <Button disabled size="sm" className="gap-2">
-          <PlusIcon />
-          새 프로젝트
+          <PlusIcon />새 프로젝트
         </Button>
       </div>
 
