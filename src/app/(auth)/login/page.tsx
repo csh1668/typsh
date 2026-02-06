@@ -2,57 +2,124 @@ import { redirect } from "next/navigation";
 
 import { auth, signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export default async function LoginPage() {
   const session = await auth();
   if (session) redirect("/projects");
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Typsh</CardTitle>
-          <CardDescription>로그인하여 시작하세요</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          <form
-            action={async () => {
-              "use server";
-              await signIn("google", { redirectTo: "/projects" });
-            }}
-          >
-            <Button variant="outline" className="w-full" type="submit">
-              <GoogleIcon />
-              Google로 로그인
-            </Button>
-          </form>
-          <form
-            action={async () => {
-              "use server";
-              await signIn("github", { redirectTo: "/projects" });
-            }}
-          >
-            <Button variant="outline" className="w-full" type="submit">
-              <GitHubIcon />
-              GitHub로 로그인
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+      {/* Subtle grid background */}
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30" />
+      {/* Top-center glow */}
+      <div className="pointer-events-none fixed top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-foreground/[0.03] blur-[100px]" />
+
+      <main className="relative z-10 flex w-full max-w-sm flex-col items-center gap-10 px-6">
+        {/* Logo & Branding */}
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex items-center gap-3">
+            <TypshLogo />
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground font-sans">
+              Typsh
+            </h1>
+          </div>
+          <p className="text-center text-sm leading-relaxed text-muted-foreground">
+            {"브라우저에서 Typst 문서를 작성하고"}
+            <br />
+            {"실시간으로 협업하세요."}
+          </p>
+        </div>
+
+        {/* Login Card */}
+        <div className="w-full rounded-xl border border-border bg-card/50 p-6 backdrop-blur-sm">
+          <div className="flex flex-col gap-3">
+            <form
+              action={async () => {
+                "use server";
+                await signIn("google", { redirectTo: "/projects" });
+              }}
+            >
+              <Button
+                variant="outline"
+                className="w-full h-10 justify-center gap-2.5 text-sm font-medium"
+                type="submit"
+              >
+                <GoogleIcon />
+                Google로 계속하기
+              </Button>
+            </form>
+
+            <div className="flex items-center gap-3 py-1">
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-xs text-muted-foreground">또는</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+
+            <form
+              action={async () => {
+                "use server";
+                await signIn("github", { redirectTo: "/projects" });
+              }}
+            >
+              <Button
+                variant="outline"
+                className="w-full h-10 justify-center gap-2.5 text-sm font-medium"
+                type="submit"
+              >
+                <GitHubIcon />
+                GitHub로 계속하기
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <p className="text-xs text-muted-foreground/60 text-center leading-relaxed">
+          {"로그인하면 "}
+          <span className="text-muted-foreground underline underline-offset-2 decoration-border">
+            {"서비스 이용약관"}
+          </span>
+          {"에 동의하게 됩니다."}
+        </p>
+      </main>
     </div>
+  );
+}
+
+function TypshLogo() {
+  return (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <rect
+        width="28"
+        height="28"
+        rx="6"
+        className="fill-foreground"
+      />
+      <text
+        x="14"
+        y="19.5"
+        textAnchor="middle"
+        className="fill-background"
+        fontSize="14"
+        fontWeight="700"
+        fontFamily="var(--font-geist-mono), monospace"
+      >
+        T
+      </text>
+    </svg>
   );
 }
 
 function GoogleIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="mr-2 h-4 w-4" aria-hidden="true">
+    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
         fill="#4285F4"
@@ -77,7 +144,7 @@ function GitHubIcon() {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="mr-2 h-4 w-4"
+      className="h-4 w-4"
       fill="currentColor"
       aria-hidden="true"
     >

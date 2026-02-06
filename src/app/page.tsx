@@ -1,5 +1,13 @@
 import { redirect } from "next/navigation";
 
-export default function Home() {
-  redirect("/plan");
+import { auth } from "@/auth";
+
+export default async function Home() {
+  const session = await auth();
+
+  if (session) {
+    redirect("/projects");
+  } else {
+    redirect("/login");
+  }
 }
