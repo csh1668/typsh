@@ -1,96 +1,70 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth, signIn } from "@/auth";
-import { TypshLogo } from "@/components/typsh-logo";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function LoginPage() {
   const session = await auth();
   if (session) redirect("/projects");
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-      {/* Subtle grid background */}
-      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30" />
-      {/* Top-center glow */}
-      <div className="pointer-events-none fixed top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-foreground/[0.03] blur-[100px]" />
-
-      <main className="relative z-10 flex w-full max-w-sm flex-col items-center gap-10 px-6">
-        {/* Logo & Branding */}
-        <div className="flex flex-col items-center gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <TypshLogo />
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground font-sans">
-              Typsh
-            </h1>
-          </Link>
-          <p className="text-center text-sm leading-relaxed text-muted-foreground">
-            {"브라우저에서 Typst 문서를 작성하고"}
-            <br />
-            {"실시간으로 협업하세요."}
-          </p>
-        </div>
-
-        {/* Login Card */}
-        <div className="w-full rounded-xl border border-border bg-card/50 p-6 backdrop-blur-sm">
-          <div className="flex flex-col gap-3">
-            <form
-              action={async () => {
-                "use server";
-                await signIn("google", { redirectTo: "/projects" });
-              }}
+    <Card className="mx-auto max-w-sm w-full bg-card/60 backdrop-blur-md border-white/10">
+      <CardHeader className="text-center pb-2">
+        <CardTitle className="text-2xl font-bold bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+          로그인
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col gap-3">
+          <form
+            action={async () => {
+              "use server";
+              await signIn("google", { redirectTo: "/projects" });
+            }}
+          >
+            <Button
+              variant="outline"
+              className="w-full h-11 justify-center gap-3 text-sm font-semibold border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+              type="submit"
             >
-              <Button
-                variant="outline"
-                className="w-full h-10 justify-center gap-2.5 text-sm font-medium"
-                type="submit"
-              >
-                <GoogleIcon />
-                Google로 계속하기
-              </Button>
-            </form>
+              <GoogleIcon />
+              Google로 계속하기
+            </Button>
+          </form>
 
-            <div className="flex items-center gap-3 py-1">
-              <div className="h-px flex-1 bg-border" />
-              <span className="text-xs text-muted-foreground">또는</span>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-
-            <form
-              action={async () => {
-                "use server";
-                await signIn("github", { redirectTo: "/projects" });
-              }}
-            >
-              <Button
-                variant="outline"
-                className="w-full h-10 justify-center gap-2.5 text-sm font-medium"
-                type="submit"
-              >
-                <GitHubIcon />
-                GitHub로 계속하기
-              </Button>
-            </form>
+          <div className="flex items-center gap-3 py-2">
+            <div className="h-px flex-1 bg-white/5" />
+            <span className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider">
+              또는
+            </span>
+            <div className="h-px flex-1 bg-white/5" />
           </div>
-        </div>
 
-        {/* Footer */}
-        <p className="text-xs text-muted-foreground/60 text-center leading-relaxed">
-          {"로그인하면 "}
-          <span className="text-muted-foreground underline underline-offset-2 decoration-border">
-            {"서비스 이용약관"}
-          </span>
-          {"에 동의하게 됩니다."}
-        </p>
-      </main>
-    </div>
+          <form
+            action={async () => {
+              "use server";
+              await signIn("github", { redirectTo: "/projects" });
+            }}
+          >
+            <Button
+              variant="outline"
+              className="w-full h-11 justify-center gap-3 text-sm font-semibold border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+              type="submit"
+            >
+              <GitHubIcon />
+              GitHub로 계속하기
+            </Button>
+          </form>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 function GoogleIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+    <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" aria-hidden="true">
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
         fill="#4285F4"
@@ -115,7 +89,7 @@ function GitHubIcon() {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="h-4 w-4"
+      className="h-4.5 w-4.5"
       fill="currentColor"
       aria-hidden="true"
     >

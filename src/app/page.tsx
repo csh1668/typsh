@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
-import { BackgroundGlow } from "@/components/landing/background-glow";
+import { BackgroundGlow } from "@/components/background-glow";
 import { HeroSection } from "@/components/landing/hero-section";
-import { LandingFooter } from "@/components/landing/landing-footer";
-import { LandingHeader } from "@/components/landing/landing-header";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
 
 export default async function Home() {
   const session = await auth();
@@ -15,14 +15,14 @@ export default async function Home() {
       <BackgroundGlow />
 
       <div className="relative z-10">
-        <LandingHeader />
+        <Header />
 
         <HeroSection />
         {/* <EditorPreview />
         <FeaturesSection />
         <TechSection /> */}
 
-        <LandingFooter />
+        <Footer />
       </div>
     </div>
   );

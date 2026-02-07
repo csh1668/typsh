@@ -3,7 +3,7 @@ import Link from "next/link";
 import { TypshLogo } from "@/components/typsh-logo";
 import { Button } from "@/components/ui/button";
 
-export function LandingHeader() {
+export function Header() {
   return (
     <header className="sticky top-0 z-50 bg-background/30 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
@@ -34,23 +34,5 @@ export function LandingHeader() {
         </div>
       </div>
     </header>
-  );
-}
-
-function NavLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      className="text-sm font-medium text-muted-foreground/80 transition-all hover:text-foreground relative group"
-    >
-      {children}
-      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-foreground transition-all group-hover:w-full" />
-    </a>
   );
 }

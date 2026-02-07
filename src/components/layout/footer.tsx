@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { TypshLogo } from "@/components/typsh-logo";
-import { Button } from "@/components/ui/button";
 
-export function LandingFooter() {
+export function Footer() {
   return (
     <footer className="relative border-t border-white/5 px-6 py-24 md:py-32 overflow-hidden">
       {/* Footer background glow */}
       <div className="absolute bottom-0 left-1/2 -z-10 h-[300px] w-full max-w-4xl -translate-x-1/2 rounded-full bg-emerald-500/5 blur-[100px]" />
 
       <div className="mx-auto max-w-5xl">
-
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-6 border-t border-white/5 pt-12 md:flex-row">
           <div className="flex items-center gap-2.5">

@@ -137,7 +137,7 @@ src/
 - File 관리 API + Vercel Blob 연동
 - 대시보드 UI (프로젝트 목록, 생성 다이얼로그)
 - 파일 트리 UI 컴포넌트
-- **결과물**: 프로젝트 생성, 파일 추가/삭제/이름변경, 이미지 업로드
+- **결과물**: 프로젝트 생성, 파일 업로드/추가/삭제/이름변경
 
 ### Phase 3: CodeMirror 에디터
 - CodeMirror 6 래퍼 컴포넌트
@@ -174,6 +174,9 @@ src/
 - WASM/폰트 캐싱 최적화
 - Vercel 배포 설정
 - 보안 강화 (Blob URL 난독화, Rate Limiting)
+
+### Phase 8: 추가 기능 개발
+- AI 어시스턴트 (Claude/Gemini/ChatGPT API Key를 프로젝트에 owner가 직접 설정 후 사용): 파일 생성/수정/삭제 가능
 
 ## Key Risks & Mitigations
 
