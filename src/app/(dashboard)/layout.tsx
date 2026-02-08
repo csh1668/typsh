@@ -2,6 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth, signOut } from "@/auth";
+import { BackgroundGlow } from "@/components/background-glow";
+import { Footer } from "@/components/layout/footer";
 import { TypshLogo } from "@/components/typsh-logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,8 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Footer } from "@/components/layout/footer";
-import { BackgroundGlow } from "@/components/background-glow";
 
 export default async function DashboardLayout({
   children,
@@ -51,7 +51,10 @@ export default async function DashboardLayout({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full border border-white/10 hover:bg-white/5 p-0">
+              <Button
+                variant="ghost"
+                className="relative h-9 w-9 rounded-full border border-white/10 hover:bg-white/5 p-0"
+              >
                 <Avatar className="h-full w-full">
                   <AvatarImage
                     src={user.image ?? undefined}
@@ -63,12 +66,15 @@ export default async function DashboardLayout({
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 p-2 bg-card/80 backdrop-blur-xl border-white/10">
+            <DropdownMenuContent
+              align="end"
+              className="w-64 p-2 bg-card/80 backdrop-blur-xl border-white/10"
+            >
               <div className="flex flex-col gap-1 px-3 py-3">
-                <p className="text-sm font-bold text-foreground">
-                  {user.name}
+                <p className="text-sm font-bold text-foreground">{user.name}</p>
+                <p className="text-xs font-medium text-muted-foreground/60">
+                  {user.email}
                 </p>
-                <p className="text-xs font-medium text-muted-foreground/60">{user.email}</p>
               </div>
               <DropdownMenuSeparator className="bg-white/5" />
               <form
@@ -78,7 +84,10 @@ export default async function DashboardLayout({
                 }}
               >
                 <DropdownMenuItem asChild>
-                  <button type="submit" className="w-full flex items-center px-3 py-2 text-sm font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-md transition-colors cursor-pointer">
+                  <button
+                    type="submit"
+                    className="w-full flex items-center px-3 py-2 text-sm font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-md transition-colors cursor-pointer"
+                  >
                     로그아웃
                   </button>
                 </DropdownMenuItem>

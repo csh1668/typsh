@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { TypshLogo } from "@/components/typsh-logo";
 
 export function Footer() {

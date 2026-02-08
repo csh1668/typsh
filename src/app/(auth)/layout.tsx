@@ -1,6 +1,6 @@
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 import { BackgroundGlow } from "@/components/background-glow";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
 
 export default function AuthLayout({
   children,

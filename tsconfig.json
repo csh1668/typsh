@@ -28,7 +28,10 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
-, "src/components/landing/features-section.tsx.bak", "src/components/landing/editor-preview.tsx.bak", "src/components/landing/tech-section.tsx.bak"  ],
+    "**/*.mts",
+    "src/components/landing/features-section.tsx.bak",
+    "src/components/landing/editor-preview.tsx.bak",
+    "src/components/landing/tech-section.tsx.bak"
+  ],
   "exclude": ["node_modules"]
 }
