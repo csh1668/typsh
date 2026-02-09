@@ -1,20 +1,24 @@
 import "server-only";
-import { randomUUID } from "node:crypto";
-import path from "node:path";
 
-export function sanitizePath(fileName: string): string {
-  // 경로 탐색 공격 방지: 파일 이름만 추출
-  const basename = path.basename(fileName);
-  // 안전한 문자로 변환
-  return basename.replace(/[^a-zA-Z0-9.-]/g, "_");
+/**
+ * Key structure: projects/{projectId}/{filePath}
+ * e.g. projects/abc123/main.typ, projects/abc123/chapters/intro.typ
+ */
+export function getStorageKey(projectId: string, filePath: string): string {
+  const safePath = sanitizePath(filePath);
+  return `projects/${projectId}/${safePath}`;
 }
 
-export function generateStorageKey(
-  projectId: string,
-  fileName: string,
-): string {
-  const safeName = sanitizePath(fileName);
-  const uniqueId = randomUUID();
-  // 프로젝트별 격리 및 고유성 보장
-  return `projects/${projectId}/${uniqueId}-${safeName}`;
+export function extractFilePath(key: string, projectId: string): string {
+  const prefix = `projects/${projectId}/`;
+  return key.slice(prefix.length);
+}
+
+export function sanitizePath(filePath: string): string {
+  // Reject path traversal
+  if (filePath.includes("..")) {
+    throw new Error("Invalid path: path traversal not allowed");
+  }
+  // Remove leading slashes
+  return filePath.replace(/^\/+/, "");
 }

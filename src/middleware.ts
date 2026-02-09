@@ -10,6 +10,7 @@ export default auth((req) => {
 export const config = {
   matcher: [
     "/projects/:path*",
+    "/project/:path*",
     "/api/projects/:path*",
     "/api/upload/:path*",
     "/api/liveblocks-auth/:path*",

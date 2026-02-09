@@ -1,8 +1,8 @@
 export interface FileItem {
-  id: string;
   path: string;
   type: "typst" | "image" | "font" | "data" | "other";
-  blobUrl: string | null;
+  size: number;
+  lastModified: Date;
 }
 
 export interface TreeFolder {
@@ -19,6 +19,18 @@ export interface TreeFile {
 }
 
 export type TreeNode = TreeFolder | TreeFile;
+
+export function getFileType(
+  path: string,
+): "typst" | "image" | "font" | "data" | "other" {
+  const ext = path.split(".").pop()?.toLowerCase();
+  if (ext === "typ") return "typst";
+  if (["png", "jpg", "jpeg", "gif", "svg", "webp"].includes(ext ?? ""))
+    return "image";
+  if (["ttf", "otf", "woff", "woff2"].includes(ext ?? "")) return "font";
+  if (["json", "csv", "yaml", "yml"].includes(ext ?? "")) return "data";
+  return "other";
+}
 
 export function buildFileTree(files: FileItem[]): TreeNode[] {
   const root: TreeNode[] = [];

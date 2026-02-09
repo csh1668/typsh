@@ -8,12 +8,12 @@ export function TypshLogo({ size = 28 }: { size?: number }) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <rect width="28" height="28" rx="6" className="fill-foreground" />
+      <rect width="28" height="28" rx="6" className="fill-primary" />
       <text
         x="14"
         y="19.5"
         textAnchor="middle"
-        className="fill-background"
+        className="fill-primary-foreground"
         fontSize="14"
         fontWeight="700"
         fontFamily="var(--font-geist-mono), monospace"

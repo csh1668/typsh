@@ -3,7 +3,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { files, projectMembers, projects } from "@/db/schema";
+import { projectMembers, projects } from "@/db/schema";
 import { storage } from "@/lib/storage";
 import { checkAuth } from "./auth";
 
@@ -77,24 +77,14 @@ export async function deleteProject(projectId: string) {
     throw new Error("Only owners can delete projects");
   }
 
-  // Find all files with blobUrls to delete from storage
-  const projectFiles = await db
-    .select({ blobUrl: files.blobUrl })
-    .from(files)
-    .where(eq(files.projectId, projectId));
-
-  const blobUrls = projectFiles
-    .map((f) => f.blobUrl)
-    .filter((url): url is string => !!url);
-
-  // Delete from storage first
-  if (blobUrls.length > 0) {
-    // We don't use Promise.all here to avoid hitting storage rate limits if there are too many files,
-    // but for typical projects it's fine.
-    await Promise.all(blobUrls.map((url) => storage.delete(url)));
+  // Delete all files from R2
+  const prefix = `projects/${projectId}/`;
+  const objects = await storage.listObjects(prefix);
+  if (objects.length > 0) {
+    await storage.deleteObjects(objects.map((obj) => obj.key));
   }
 
-  // Delete the project (cascade will handle projectMembers and files metadata)
+  // Delete the project (cascade will handle projectMembers)
   await db.delete(projects).where(eq(projects.id, projectId));
 
   revalidatePath("/projects");
@@ -142,6 +132,7 @@ export async function getProjectById(projectId: string) {
       name: projects.name,
       description: projects.description,
       ownerId: projects.ownerId,
+      mainFile: projects.mainFile,
       createdAt: projects.createdAt,
       updatedAt: projects.updatedAt,
       role: projectMembers.role,

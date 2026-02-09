@@ -54,7 +54,7 @@ import { cn } from "@/lib/utils";
 interface FileTreeProps {
   projectId: string;
   files: FileItem[];
-  activeFileId?: string;
+  activeFilePath?: string;
   onFileSelect?: (file: FileItem) => void;
 }
 
@@ -76,7 +76,7 @@ interface OperationState {
 export function FileTree({
   projectId,
   files,
-  activeFileId,
+  activeFilePath,
   onFileSelect,
 }: FileTreeProps) {
   const [isUploading, setIsUploading] = useState(false);
@@ -105,8 +105,8 @@ export function FileTree({
     parentPath?: string,
   ) => {
     setOperation({ type, target, parentPath, isOpen: true });
-    if (type === "rename_file" && target && "path" in target) {
-      setInputValue(target.path); // Full path for file rename, but usually we just want the name. Let's handle logic below.
+    if (type === "rename_file" && target && "type" in target) {
+      setInputValue(target.path);
     } else if (type === "rename_folder" && target) {
       setInputValue(target.path);
     } else {
@@ -142,33 +142,32 @@ export function FileTree({
           break;
         }
         case "rename_file": {
-          if (!operation.target || !("blobUrl" in operation.target)) return;
+          if (!operation.target || !("type" in operation.target)) return;
           const file = operation.target as FileItem;
           const newName = inputValue.trim();
           if (!newName || newName === file.path) return;
-          await renameFile(projectId, file.id, newName);
+          await renameFile(projectId, file.path, newName);
           toast.success("파일 이름이 변경되었습니다.");
           break;
         }
         case "rename_folder": {
-          if (!operation.target || "blobUrl" in operation.target) return;
+          if (!operation.target || !("children" in operation.target)) return;
           const folder = operation.target as TreeFolder;
           const newName = inputValue.trim();
           if (!newName || newName === folder.path) return;
-          // renameFolder action is needed in files.ts
           await renameFolder(projectId, folder.path, newName);
           toast.success("폴더 이름이 변경되었습니다.");
           break;
         }
         case "delete_file": {
-          if (!operation.target || !("blobUrl" in operation.target)) return;
+          if (!operation.target || !("type" in operation.target)) return;
           const file = operation.target as FileItem;
-          await deleteFile(projectId, file.id);
+          await deleteFile(projectId, file.path);
           toast.success("파일이 삭제되었습니다.");
           break;
         }
         case "delete_folder": {
-          if (!operation.target || "blobUrl" in operation.target) return;
+          if (!operation.target || !("children" in operation.target)) return;
           const folder = operation.target as TreeFolder;
           await deleteFolder(projectId, folder.path);
           toast.success("폴더가 삭제되었습니다.");
@@ -301,11 +300,11 @@ export function FileTree({
     if (node.name === ".gitkeep") return null;
 
     const file = node.file;
-    const isActive = activeFileId === file.id;
+    const isActive = activeFilePath === file.path;
 
     return (
       <div
-        key={file.id}
+        key={file.path}
         className={cn(
           "group flex items-center justify-between gap-2 rounded-md text-sm transition-colors",
           isActive

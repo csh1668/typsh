@@ -13,7 +13,7 @@
 | Auth | next-auth (Google + GitHub OAuth) |
 | Database | Neon Postgres (Vercel Marketplace) |
 | ORM | Drizzle ORM |
-| File Storage | Vercel Blob |
+| File Storage | Cloudflare R2 |
 | Styling | Tailwind CSS v4 + shadcn/ui |
 | Deployment | Vercel Serverless |
 
@@ -33,7 +33,7 @@ Browser
 Server (Vercel Serverless)
 ├── next-js (인증)
 ├── Drizzle ORM → Neon Postgres (메타데이터)
-├── Vercel Blob (파일 저장)
+├── Cloudflare R2 (파일 저장)
 └── Liveblocks Auth Endpoint (협업 권한)
 ```
 
@@ -54,14 +54,6 @@ project_members
 ├── userId → users.id
 ├── role: "owner" | "editor" | "viewer"
 └── joinedAt
-
-files
-├── id, projectId → projects.id
-├── path (예: "main.typ", "chapters/intro.typ")
-├── blobUrl (Vercel Blob URL)
-├── type: "typst" | "image" | "font" | "data" | "other"
-├── size
-└── createdAt, updatedAt
 ```
 
 ## Liveblocks Room Structure
@@ -70,7 +62,7 @@ files
 Room: "project:{projectId}" (프로젝트당 1개 룸)
 ├── Y.Doc
 │   ├── Y.Map("files")          # 파일 메타데이터 동기화
-│   ├── Y.Text("file:{fileId}") # 파일별 협업 텍스트 (파일 ID로 키잉)
+│   ├── Y.Text("file:{path}")   # 파일별 협업 텍스트 (파일 경로로 키잉)
 │   └── Y.Map("meta")           # 시딩 상태 등
 ├── Presence (사용자별)
 │   ├── activeFile: string | null
@@ -144,12 +136,13 @@ src/
 - `codemirror-lang-typst`로 Typst 구문 강조
 - 3-pane 에디터 레이아웃 (파일트리 | 에디터 | 프리뷰)
 - 파일 콘텐츠 로드/저장 (Blob 직접 연동)
-- **결과물**: 구문 강조된 Typst 편집, 자동저장
+- 디자인 디테일: Typst 브랜드 컬러 반영
+- **결과물**: 구문 강조된 Typst 편집, 자동저장 (파일 변경 후 지정된 시간(afterDelay) 경과 시, 창이 포커스를 잃을 때(onFocusChange), 또는 변경이 발생할 때(onChange))
 
 ### Phase 4: Typst WASM 컴파일 + 라이브 프리뷰
 - `@myriaddreamin/typst.ts` WASM 컴파일러 초기화
 - Shadow Filesystem으로 멀티 파일 지원
-- 디바운스 컴파일 (400ms) + SVG 프리뷰
+- 디바운스 컴파일 (400ms) + SVG 프리뷰: 대형 문서에서 느려질 수 있으므로 Web Worker를 활용하여 컴파일 로직을 메인과 분리
 - 컴파일 에러 표시
 - PDF 다운로드
 - **결과물**: 실시간 프리뷰, PDF 내보내기
@@ -177,6 +170,11 @@ src/
 
 ### Phase 8: 추가 기능 개발
 - AI 어시스턴트 (Claude/Gemini/ChatGPT API Key를 프로젝트에 owner가 직접 설정 후 사용): 파일 생성/수정/삭제 가능
+- Typst universe 연동 (https://typst.app/universe/): 에디터 내에서 검색하고, 한 번의 클릭으로 import 구문을 삽입
+- LSP 통합
+- Smart Table/Math Editor: 복잡한 테이블 코드나 수식을 시각적인 UI로 편집하고 코드로 변환해주는 도구
+- Snapshot, Commit, Git 버전 관리
+- 발표 모드
 
 ## Key Risks & Mitigations
 

@@ -1,7 +1,7 @@
 import "server-only";
+import { R2Storage } from "./r2-storage";
 import type { StorageProvider } from "./types";
-import { VercelBlobStorage } from "./vercel-blob-storage";
 
-export const storage: StorageProvider = new VercelBlobStorage();
+export const storage: StorageProvider = new R2Storage();
 
 export type { StorageProvider };

@@ -75,14 +75,6 @@ export const memberRoleEnum = pgEnum("member_role", [
   "viewer",
 ]);
 
-export const fileTypeEnum = pgEnum("file_type", [
-  "typst",
-  "image",
-  "font",
-  "data",
-  "other",
-]);
-
 export const projects = pgTable("project", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
@@ -109,16 +101,3 @@ export const projectMembers = pgTable(
   },
   (member) => [primaryKey({ columns: [member.projectId, member.userId] })],
 );
-
-export const files = pgTable("file", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  projectId: uuid("projectId")
-    .notNull()
-    .references(() => projects.id, { onDelete: "cascade" }),
-  path: text("path").notNull(),
-  blobUrl: text("blobUrl"),
-  type: fileTypeEnum("type").notNull().default("typst"),
-  size: integer("size"),
-  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
-});

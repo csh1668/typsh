@@ -1,11 +1,17 @@
 "use server";
 
-import { and, asc, eq, like, or } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { files, projectMembers } from "@/db/schema";
+import { projectMembers } from "@/db/schema";
 import { storage } from "@/lib/storage";
-import { generateStorageKey } from "@/lib/storage/utils";
+import {
+  extractFilePath,
+  getStorageKey,
+  sanitizePath,
+} from "@/lib/storage/utils";
+import type { FileItem } from "@/lib/tree-utils";
+import { getFileType } from "@/lib/tree-utils";
 import { checkAuth } from "./auth";
 
 async function checkProjectPermission(
@@ -36,51 +42,42 @@ async function checkProjectPermission(
   return userId;
 }
 
-export async function getFiles(projectId: string) {
+export async function getFiles(projectId: string): Promise<FileItem[]> {
   await checkProjectPermission(projectId);
 
-  return await db
-    .select()
-    .from(files)
-    .where(eq(files.projectId, projectId))
-    .orderBy(asc(files.path));
+  const prefix = `projects/${projectId}/`;
+  const objects = await storage.listObjects(prefix);
+
+  return objects.map((obj) => ({
+    path: extractFilePath(obj.key, projectId),
+    type: getFileType(obj.key),
+    size: obj.size,
+    lastModified: obj.lastModified,
+  }));
+}
+
+export async function getFileContent(
+  projectId: string,
+  filePath: string,
+): Promise<string> {
+  await checkProjectPermission(projectId);
+
+  const key = getStorageKey(projectId, filePath);
+  return await storage.getObject(key);
 }
 
 export async function createFile(
   projectId: string,
   path: string,
-  type: "typst" | "image" | "font" | "data" | "other" = "typst",
+  _type: "typst" | "image" | "font" | "data" | "other" = "typst",
   content: string = "",
 ) {
   await checkProjectPermission(projectId, "editor");
 
-  let blobUrl = null;
-  // Allow creating empty files for text-based types
-  if (type === "typst" || type === "data" || type === "other") {
-    const storageKey = generateStorageKey(projectId, path);
-    blobUrl = await storage.upload(storageKey, content);
-  }
+  const key = getStorageKey(projectId, path);
+  await storage.putObject(key, content);
 
-  try {
-    const [newFile] = await db
-      .insert(files)
-      .values({
-        projectId,
-        path, // Logical path (e.g., "chapters/intro.typ")
-        type,
-        blobUrl,
-        size: content.length,
-      })
-      .returning();
-
-    revalidatePath(`/project/${projectId}`);
-    return newFile;
-  } catch (error) {
-    if (blobUrl) {
-      await storage.delete(blobUrl);
-    }
-    throw error;
-  }
+  revalidatePath(`/project/${projectId}`);
 }
 
 export async function uploadFile(
@@ -93,47 +90,17 @@ export async function uploadFile(
   const file = formData.get("file") as File;
   if (!file) throw new Error("No file provided");
 
-  const storageKey = generateStorageKey(projectId, path);
-  const url = await storage.upload(storageKey, file);
+  const key = getStorageKey(projectId, path);
+  await storage.putObject(key, file);
 
-  try {
-    const [newFile] = await db
-      .insert(files)
-      .values({
-        projectId,
-        path, // Logical path
-        type: getFileType(path),
-        blobUrl: url,
-        size: file.size,
-      })
-      .returning();
-
-    revalidatePath(`/project/${projectId}`);
-    return newFile;
-  } catch (error) {
-    await storage.delete(url);
-    throw error;
-  }
+  revalidatePath(`/project/${projectId}`);
 }
 
-export async function deleteFile(projectId: string, fileId: string) {
+export async function deleteFile(projectId: string, filePath: string) {
   await checkProjectPermission(projectId, "editor");
 
-  const [deletedFile] = await db.transaction(async (tx) => {
-    const [file] = await tx
-      .select()
-      .from(files)
-      .where(and(eq(files.id, fileId), eq(files.projectId, projectId)));
-
-    if (!file) throw new Error("File not found");
-
-    await tx.delete(files).where(eq(files.id, fileId));
-    return [file];
-  });
-
-  if (deletedFile?.blobUrl) {
-    await storage.delete(deletedFile.blobUrl);
-  }
+  const key = getStorageKey(projectId, filePath);
+  await storage.deleteObject(key);
 
   revalidatePath(`/project/${projectId}`);
 }
@@ -141,51 +108,12 @@ export async function deleteFile(projectId: string, fileId: string) {
 export async function deleteFolder(projectId: string, folderPath: string) {
   await checkProjectPermission(projectId, "editor");
 
-  // Escape special characters for LIKE query
-  // Postgres uses backslash as default escape character
-  const escapedPath = folderPath.replace(/[%_]/g, "\\$&");
+  const safePath = sanitizePath(folderPath);
+  const prefix = `projects/${projectId}/${safePath}/`;
+  const objects = await storage.listObjects(prefix);
 
-  const filesToDelete = await db.transaction(async (tx) => {
-    // Find all files that are inside this folder or its subfolders
-    const targets = await tx
-      .select()
-      .from(files)
-      .where(
-        and(
-          eq(files.projectId, projectId),
-          or(
-            like(files.path, `${escapedPath}/%`),
-            eq(files.path, folderPath), // In case the folder itself is represented by a file (like .gitkeep)
-          ),
-        ),
-      );
-
-    if (targets.length > 0) {
-      // Delete from database
-      await tx
-        .delete(files)
-        .where(
-          and(
-            eq(files.projectId, projectId),
-            or(
-              like(files.path, `${escapedPath}/%`),
-              eq(files.path, folderPath),
-            ),
-          ),
-        );
-    }
-    return targets;
-  });
-
-  if (filesToDelete.length === 0) return;
-
-  // Delete from storage
-  const blobUrls = filesToDelete
-    .map((f) => f.blobUrl)
-    .filter((url): url is string => !!url);
-
-  if (blobUrls.length > 0) {
-    await Promise.all(blobUrls.map((url) => storage.delete(url)));
+  if (objects.length > 0) {
+    await storage.deleteObjects(objects.map((obj) => obj.key));
   }
 
   revalidatePath(`/project/${projectId}`);
@@ -193,18 +121,18 @@ export async function deleteFolder(projectId: string, folderPath: string) {
 
 export async function renameFile(
   projectId: string,
-  fileId: string,
+  oldPath: string,
   newPath: string,
 ) {
   await checkProjectPermission(projectId, "editor");
 
-  await db
-    .update(files)
-    .set({
-      path: newPath,
-      updatedAt: new Date(),
-    })
-    .where(and(eq(files.id, fileId), eq(files.projectId, projectId)));
+  if (oldPath === newPath) return;
+
+  const sourceKey = getStorageKey(projectId, oldPath);
+  const destKey = getStorageKey(projectId, newPath);
+
+  await storage.copyObject(sourceKey, destKey);
+  await storage.deleteObject(sourceKey);
 
   revalidatePath(`/project/${projectId}`);
 }
@@ -216,48 +144,35 @@ export async function renameFolder(
 ) {
   await checkProjectPermission(projectId, "editor");
 
-  const escapedOldPath = oldPath.replace(/[%_]/g, "\\$&");
+  if (oldPath === newPath) return;
 
-  await db.transaction(async (tx) => {
-    const projectFiles = await tx
-      .select()
-      .from(files)
-      .where(
-        and(
-          eq(files.projectId, projectId),
-          or(like(files.path, `${escapedOldPath}/%`), eq(files.path, oldPath)),
-        ),
-      );
+  const safeOldPath = sanitizePath(oldPath);
+  const safeNewPath = sanitizePath(newPath);
+  const prefix = `projects/${projectId}/${safeOldPath}/`;
+  const objects = await storage.listObjects(prefix);
 
-    for (const file of projectFiles) {
-      const newFilePath =
-        file.path === oldPath
-          ? newPath
-          : file.path.replace(new RegExp(`^${oldPath}/`), `${newPath}/`);
+  if (objects.length === 0) return;
 
-      if (newFilePath !== file.path) {
-        await tx
-          .update(files)
-          .set({
-            path: newFilePath,
-            updatedAt: new Date(),
-          })
-          .where(eq(files.id, file.id));
-      }
-    }
-  });
+  // Copy all objects to new prefix
+  for (const obj of objects) {
+    const relativePath = obj.key.slice(prefix.length);
+    const destKey = `projects/${projectId}/${safeNewPath}/${relativePath}`;
+    await storage.copyObject(obj.key, destKey);
+  }
+
+  // Delete all old objects
+  await storage.deleteObjects(objects.map((obj) => obj.key));
 
   revalidatePath(`/project/${projectId}`);
 }
 
-function getFileType(
-  path: string,
-): "typst" | "image" | "font" | "data" | "other" {
-  const ext = path.split(".").pop()?.toLowerCase();
-  if (ext === "typ") return "typst";
-  if (["png", "jpg", "jpeg", "gif", "svg", "webp"].includes(ext || ""))
-    return "image";
-  if (["ttf", "otf", "woff", "woff2"].includes(ext || "")) return "font";
-  if (["json", "csv", "yaml", "yml"].includes(ext || "")) return "data";
-  return "other";
+export async function updateFileContent(
+  projectId: string,
+  filePath: string,
+  content: string,
+) {
+  await checkProjectPermission(projectId, "editor");
+
+  const key = getStorageKey(projectId, filePath);
+  await storage.putObject(key, content);
 }

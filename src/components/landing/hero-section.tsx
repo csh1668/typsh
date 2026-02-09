@@ -29,21 +29,6 @@ export function HeroSection() {
         >
           <Link href="/login">{"무료로 시작하기"}</Link>
         </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          asChild
-          className="h-12 px-8 text-base font-medium border-border/50 bg-background/30 backdrop-blur-sm hover:bg-accent transition-all duration-300"
-        >
-          <a
-            href="https://github.com/csh1668/typsh"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <GithubIcon />
-            {"GitHub"}
-          </a>
-        </Button>
       </div>
     </section>
   );
