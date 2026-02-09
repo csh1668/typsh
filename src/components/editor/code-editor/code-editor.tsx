@@ -12,6 +12,7 @@ import { typstTheme } from "./typst-theme";
 export interface CodeEditorHandle {
   setContent: (content: string) => void;
   getContent: () => string;
+  focus: () => void;
 }
 
 interface CodeEditorProps {
