@@ -126,7 +126,7 @@ src/
 
 ### Phase 2: 프로젝트/파일 관리
 - Project CRUD API (생성/조회/수정/삭제)
-- File 관리 API + Vercel Blob 연동
+- File 관리 API + Cloudflare R2 연동
 - 대시보드 UI (프로젝트 목록, 생성 다이얼로그)
 - 파일 트리 UI 컴포넌트
 - **결과물**: 프로젝트 생성, 파일 업로드/추가/삭제/이름변경
@@ -151,7 +151,7 @@ src/
 - Liveblocks 설정 + 인증 엔드포인트
 - 파일별 Y.Text + yCollab로 동시 편집
 - 협업 커서 및 접속자 표시
-- Y.Doc ↔ Vercel Blob 동기화 (시딩 + 주기적 저장)
+- Y.Doc ↔ Cloudflare R2 동기화 (시딩 + 주기적 저장)
 - **결과물**: 다수 사용자 동시 편집, 실시간 커서
 
 ### Phase 6: 프로젝트 공유 및 권한
@@ -169,9 +169,14 @@ src/
 - 보안 강화 (Blob URL 난독화, Rate Limiting)
 
 ### Phase 8: 추가 기능 개발
-- AI 어시스턴트 (Claude/Gemini/ChatGPT API Key를 프로젝트에 owner가 직접 설정 후 사용): 파일 생성/수정/삭제 가능
-- Typst universe 연동 (https://typst.app/universe/): 에디터 내에서 검색하고, 한 번의 클릭으로 import 구문을 삽입
 - LSP 통합
+- 에디터 개선: Word처럼 드래그 -> 버튼 클릭으로 서식 적용
+- AI 어시스턴트 (Claude/Gemini/ChatGPT API Key를 프로젝트에 owner가 직접 설정 후 사용): 파일 생성/수정/삭제 가능
+  - Editor를 4 column으로 구성, 가장 오른쪽에 AI Chat 기능 추가
+  - AI Chat에서는 Cursor처럼 메시지를 입력할 수 있고 @를 사용하여 파일을 지정할 수 있고, AI 모델을 선택할 수 있음.
+  - LangChain/LangGraph로 Agent 구성
+  - 파일 생성/삭제/부분수정/읽기 등의 tool 제공
+- Typst universe 연동 (https://typst.app/universe/): 에디터 내에서 검색하고, 한 번의 클릭으로 import 구문을 삽입
 - Smart Table/Math Editor: 복잡한 테이블 코드나 수식을 시각적인 UI로 편집하고 코드로 변환해주는 도구
 - Snapshot, Commit, Git 버전 관리
 - 발표 모드
@@ -183,7 +188,7 @@ src/
 | `codemirror-lang-typst` 불안정 (v0.4.0, 실험적) | 높음 | Fallback: StreamLanguage 기반 간단한 토크나이저 |
 | Typst WASM 7.62MB 초기 로딩 | 중간 | CDN + Service Worker 캐싱 + 프로그레스바 |
 | COEP/COOP 헤더가 OAuth 방해 | 높음 | 에디터 라우트에만 헤더 적용 |
-| Vercel Blob URL 공개 접근 | 중간 | 랜덤 접미사 사용, DB를 통해서만 URL 노출 |
+| Cloudflare R2 URL 공개 접근 | 중간 | 랜덤 접미사 사용, DB를 통해서만 URL 노출 |
 | Neon 콜드 스타트 500ms-2s | 낮음 | 로딩 인디케이터 표시 |
 | Y.Doc 시딩 레이스 컨디션 | 중간 | Y.Map 플래그로 시딩 조정 |
 | Liveblocks 무료: 월 500 active rooms | 낮음 | 출시 후 필요시 업그레이드 |

@@ -45,6 +45,9 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
       getContent() {
         return viewRef.current?.state.doc.toString() ?? "";
       },
+      focus() {
+        viewRef.current?.focus();
+      },
     }));
 
     useEffect(() => {
@@ -76,6 +79,7 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(
         parent: containerRef.current,
       });
 
+      view.focus();
       viewRef.current = view;
 
       return () => {

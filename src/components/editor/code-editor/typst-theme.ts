@@ -97,39 +97,42 @@ const editorTheme = EditorView.theme(
   { dark: true },
 );
 
-const highlightStyle = HighlightStyle.define([
-  { tag: tags.keyword, color: "oklch(0.8 0.16 310)" }, // purple
-  { tag: tags.operator, color: "oklch(0.85 0.12 70)" }, // warm/gold
-  { tag: tags.special(tags.variableName), color: "oklch(0.8 0.16 40)" }, // orange/red
-  { tag: tags.typeName, color: "oklch(0.82 0.12 210)" }, // cyan
-  { tag: tags.atom, color: "oklch(0.8 0.16 40)" },
-  { tag: tags.number, color: "oklch(0.85 0.12 90)" }, // lime/yellow
-  { tag: tags.definition(tags.variableName), color: "oklch(0.85 0.12 210)" },
-  { tag: tags.string, color: "oklch(0.82 0.15 160)" }, // green
-  { tag: tags.special(tags.string), color: "oklch(0.82 0.15 160)" },
-  { tag: tags.comment, color: "oklch(0.6 0 0)", fontStyle: "italic" },
-  { tag: tags.variableName, color: "oklch(0.9 0.05 220)" },
-  { tag: tags.tagName, color: typstBrand },
-  { tag: tags.bracket, color: "oklch(0.8 0 0)" },
-  { tag: tags.meta, color: "oklch(0.75 0.1 70)" },
-  { tag: tags.link, color: typstBrand, textDecoration: "underline" },
-  { tag: tags.heading, color: "oklch(0.8 0.12 215)", fontWeight: "bold" },
-  { tag: tags.heading1, color: "oklch(0.8 0.12 215)", fontWeight: "bold" },
-  { tag: tags.heading2, color: "oklch(0.8 0.12 215)", fontWeight: "bold" },
-  { tag: tags.heading3, color: "oklch(0.8 0.12 215)", fontWeight: "bold" },
-  { tag: tags.emphasis, fontStyle: "italic" },
-  { tag: tags.strong, fontWeight: "bold" },
-  { tag: tags.strikethrough, textDecoration: "line-through" },
-  { tag: tags.invalid, color: "oklch(0.7 0.2 25)" }, // red
-  {
-    tag: tags.function(tags.variableName),
-    color: typstBrand,
-  },
-  { tag: tags.labelName, color: "oklch(0.85 0.12 90)" },
-  { tag: tags.processingInstruction, color: "oklch(0.8 0.16 310)" },
-  { tag: tags.punctuation, color: "oklch(0.8 0 0)" },
-  { tag: tags.content, color: "oklch(0.985 0 0)" },
-  { tag: tags.separator, color: "oklch(0.8 0 0)" },
-], { all: { color: "oklch(0.985 0 0)" } });
+const highlightStyle = HighlightStyle.define(
+  [
+    { tag: tags.keyword, color: "oklch(0.8 0.16 310)" }, // purple
+    { tag: tags.operator, color: "oklch(0.85 0.12 70)" }, // warm/gold
+    { tag: tags.special(tags.variableName), color: "oklch(0.8 0.16 40)" }, // orange/red
+    { tag: tags.typeName, color: "oklch(0.82 0.12 210)" }, // cyan
+    { tag: tags.atom, color: "oklch(0.8 0.16 40)" },
+    { tag: tags.number, color: "oklch(0.85 0.12 90)" }, // lime/yellow
+    { tag: tags.definition(tags.variableName), color: "oklch(0.85 0.12 210)" },
+    { tag: tags.string, color: "oklch(0.82 0.15 160)" }, // green
+    { tag: tags.special(tags.string), color: "oklch(0.82 0.15 160)" },
+    { tag: tags.comment, color: "oklch(0.6 0 0)", fontStyle: "italic" },
+    { tag: tags.variableName, color: "oklch(0.9 0.05 220)" },
+    { tag: tags.tagName, color: typstBrand },
+    { tag: tags.bracket, color: "oklch(0.8 0 0)" },
+    { tag: tags.meta, color: "oklch(0.75 0.1 70)" },
+    { tag: tags.link, color: typstBrand, textDecoration: "underline" },
+    { tag: tags.heading, color: "oklch(0.8 0.12 215)", fontWeight: "bold" },
+    { tag: tags.heading1, color: "oklch(0.8 0.12 215)", fontWeight: "bold" },
+    { tag: tags.heading2, color: "oklch(0.8 0.12 215)", fontWeight: "bold" },
+    { tag: tags.heading3, color: "oklch(0.8 0.12 215)", fontWeight: "bold" },
+    { tag: tags.emphasis, fontStyle: "italic" },
+    { tag: tags.strong, fontWeight: "bold" },
+    { tag: tags.strikethrough, textDecoration: "line-through" },
+    { tag: tags.invalid, color: "oklch(0.7 0.2 25)" }, // red
+    {
+      tag: tags.function(tags.variableName),
+      color: typstBrand,
+    },
+    { tag: tags.labelName, color: "oklch(0.85 0.12 90)" },
+    { tag: tags.processingInstruction, color: "oklch(0.8 0.16 310)" },
+    { tag: tags.punctuation, color: "oklch(0.8 0 0)" },
+    { tag: tags.content, color: "oklch(0.985 0 0)" },
+    { tag: tags.separator, color: "oklch(0.8 0 0)" },
+  ],
+  { all: { color: "oklch(0.985 0 0)" } },
+);
 
 export const typstTheme = [editorTheme, syntaxHighlighting(highlightStyle)];

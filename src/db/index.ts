@@ -5,7 +5,7 @@ import ws from "ws";
 import { serverEnv } from "@/lib/env/server";
 import * as schema from "./schema";
 
-// WebSocket support for local development and some environments
+// WebSocket support for local development and some environments to use transactions
 neonConfig.webSocketConstructor = ws;
 
 const pool = new Pool({ connectionString: serverEnv.DATABASE_URL });

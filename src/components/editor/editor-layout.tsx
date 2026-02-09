@@ -122,6 +122,8 @@ export function EditorLayout({
             editorRef.current?.setContent("");
           }
         }
+        // Focus editor after content is set
+        setTimeout(() => editorRef.current?.focus(), 0);
       } finally {
         suppressChangeRef.current = false;
       }

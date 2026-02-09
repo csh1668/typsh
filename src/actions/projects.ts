@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { projectMembers, projects } from "@/db/schema";
 import { storage } from "@/lib/storage";
+import { getStorageKey } from "@/lib/storage/utils";
 import { checkAuth } from "./auth";
 
 export async function getProjects() {
@@ -50,6 +51,11 @@ export async function createProject(formData: {
       userId: userId,
       role: "owner",
     });
+
+    // Create default main.typ file
+    const defaultContent = `#set page(paper: "a4")\n#set text(font: "Linux Libertine", size: 11pt)\n\n= ${formData.name}\n\nWelcome to your new Typst project!`;
+    const key = getStorageKey(newProject.id, newProject.mainFile);
+    await storage.putObject(key, defaultContent);
 
     return newProject;
   });
